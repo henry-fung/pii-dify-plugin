@@ -1,0 +1,18 @@
+identity:
+  author: AI Assistant
+  name: pii_plugin
+  label:
+    en_US: PII Detection Plugin
+    zh_Hans: PII 检测插件
+  description:
+    en_US: Detect and analyze Personally Identifiable Information (PII) in text using AI-powered analysis
+    zh_Hans: 使用AI技术检测和分析文本中的个人身份识别信息（PII）
+  icon: icon.svg
+credentials_for_provider: {}  # 暂时不需要额外凭证，使用Dify内置LLM
+tools:
+  - tools/pii_detect.yaml
+  - tools/pii_analyze.yaml
+  - tools/pii_mask.yaml
+extra:
+  python:
+    source: provider/pii_plugin.py
