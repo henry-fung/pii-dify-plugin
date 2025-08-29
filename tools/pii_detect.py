@@ -32,19 +32,10 @@ class PiiDetectTool(Tool):
                 yield self.create_text_message("错误：请提供需要检测的文本内容。")
                 return
             
-            # 获取可选的PII类别参数
-            pii_categories_str = tool_parameters.get("pii_categories")
-            categories: Optional[List[str]] = None
-            
-            if pii_categories_str:
-                # 解析逗号分隔的类别列表
-                categories = [cat.strip() for cat in pii_categories_str.split(",") if cat.strip()]
-                yield self.create_text_message(f"检测特定类别：{', '.join(categories)}")
-            else:
-                yield self.create_text_message("检测所有PII类别...")
+
             
             # 生成检测prompt
-            detection_prompt = pii_detector.generate_detection_prompt(text, categories)
+            detection_prompt = pii_detector.generate_detection_prompt(text)
             
             # 获取模型配置
             model_config = tool_parameters.get("model")
@@ -87,43 +78,43 @@ class PiiDetectTool(Tool):
                 return
             
             # 验证结果格式
-            if not pii_detector.validate_detection_result(detection_result):
-                yield self.create_text_message("警告：检测结果格式不完整，可能影响准确性。")
+            # if not pii_detector.validate_detection_result(detection_result):
+            #     yield self.create_text_message("警告：检测结果格式不完整，可能影响准确性。")
             
             # 生成检测摘要
-            has_pii = detection_result.get("has_pii", False)
-            risk_level = detection_result.get("risk_level", "unknown")
-            detected_count = len(detection_result.get("detected_items", []))
-            
-            if has_pii:
-                yield self.create_text_message(
-                    f"✅ PII检测完成\n"
-                    f"🔍 检测到 {detected_count} 个PII项目\n"
-                    f"⚠️ 风险等级：{risk_level}\n"
-                    f"📋 摘要：{detection_result.get('summary', '无摘要')}"
-                )
-                
-                # 显示检测到的PII项目详情
-                for i, item in enumerate(detection_result.get("detected_items", []), 1):
-                    yield self.create_text_message(
-                        f"🔸 项目 {i}：{item.get('category', 'unknown')}\n"
-                        f"   值：{item.get('value', 'N/A')}\n"
-                        f"   置信度：{item.get('confidence', 0):.2f}\n"
-                        f"   位置：{item.get('start_pos', 0)}-{item.get('end_pos', 0)}\n"
-                        f"   描述：{item.get('description', '无描述')}"
-                    )
-            else:
-                yield self.create_text_message(
-                    f"✅ PII检测完成\n"
-                    f"🔍 未检测到PII信息\n"
-                    f"📋 摘要：{detection_result.get('summary', '文本中未发现个人身份识别信息')}"
-                )
+            # has_pii = detection_result.get("has_pii", False)
+            # risk_level = detection_result.get("risk_level", "unknown")
+            # detected_count = len(detection_result.get("detected_items", []))
+            #
+            # if has_pii:
+            #     yield self.create_text_message(
+            #         f"✅ PII检测完成\n"
+            #         f"🔍 检测到 {detected_count} 个PII项目\n"
+            #         f"⚠️ 风险等级：{risk_level}\n"
+            #         f"📋 摘要：{detection_result.get('summary', '无摘要')}"
+            #     )
+            #
+            #     # 显示检测到的PII项目详情
+            #     for i, item in enumerate(detection_result.get("detected_items", []), 1):
+            #         yield self.create_text_message(
+            #             f"🔸 项目 {i}：{item.get('category', 'unknown')}\n"
+            #             f"   值：{item.get('value', 'N/A')}\n"
+            #             f"   置信度：{item.get('confidence', 0):.2f}\n"
+            #             f"   位置：{item.get('start_pos', 0)}-{item.get('end_pos', 0)}\n"
+            #             f"   描述：{item.get('description', '无描述')}"
+            #         )
+            # else:
+            #     yield self.create_text_message(
+            #         f"✅ PII检测完成\n"
+            #         f"🔍 未检测到PII信息\n"
+            #         f"📋 摘要：{detection_result.get('summary', '文本中未发现个人身份识别信息')}"
+            #     )
             
             # 返回结构化结果用于工作流
             yield self.create_json_message(detection_result)
             yield self.create_variable_message("detection_result", detection_result)
-            yield self.create_variable_message("has_pii", has_pii)
-            yield self.create_variable_message("risk_level", risk_level)
+            # yield self.create_variable_message("has_pii", has_pii)
+            # yield self.create_variable_message("risk_level", risk_level)
             
         except Exception as e:
             yield self.create_text_message(f"PII检测过程中发生错误：{str(e)}")

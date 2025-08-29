@@ -21,17 +21,6 @@ parameters:
       zh_Hans: 需要进行PII检测的文本内容
     llm_description: The input text that needs to be analyzed for detecting personally identifiable information. This can be any text content including documents, messages, forms, etc.
     form: llm
-  - name: pii_categories
-    type: string
-    required: false
-    label:
-      en_US: PII Categories (optional)
-      zh_Hans: PII类别（可选）
-    human_description:
-      en_US: Comma-separated list of PII categories to detect (e.g., "person_name,email,phone"). Leave empty to detect all categories.
-      zh_Hans: 要检测的PII类别，用逗号分隔（如"person_name,email,phone"）。留空则检测所有类别。
-    llm_description: Optional comma-separated list of specific PII categories to focus on. Available categories include person_name, email, phone, id_number, address, bank_account, credit_card, passport, driver_license, social_security, date_of_birth, organization. If not specified, all categories will be checked.
-    form: llm
   - name: model
     type: model-selector
     scope: llm
@@ -53,9 +42,3 @@ output_schema:
     detection_result:
       type: object
       description: Complete PII detection result including detected items, risk level, and summary
-    has_pii:
-      type: boolean
-      description: Whether any PII was detected in the text
-    risk_level:
-      type: string
-      description: Overall risk level assessment (low/medium/high)

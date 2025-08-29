@@ -11,8 +11,8 @@ identity:
 credentials_for_provider: {}  # 暂时不需要额外凭证，使用Dify内置LLM
 tools:
   - tools/pii_detect.yaml
-  - tools/pii_analyze.yaml
-  - tools/pii_mask.yaml
+#  - tools/pii_analyze.yaml
+#  - tools/pii_mask.yaml
 extra:
   python:
     source: provider/pii_plugin.py
